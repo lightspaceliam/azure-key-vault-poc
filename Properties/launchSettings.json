@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "KeyVault-POC": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
