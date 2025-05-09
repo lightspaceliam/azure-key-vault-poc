@@ -1,11 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-/*
- * Refs: 
- * https://www.c-sharpcorner.com/blogs/fetching-secrets-from-key-vault-in-net-console-app
- * A bit of Copilot help 
- */
-using KeyVault_POC.Services;
+﻿using KeyVault_POC.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,21 +6,18 @@ using Microsoft.Extensions.Hosting;
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
-        // I can read both, environment variables and user secrets without enabling these two:
         config.AddEnvironmentVariables();
         config.AddUserSecrets<Program>();
 
         var environment = context.HostingEnvironment;
-        Console.WriteLine($"Environment: {environment.EnvironmentName}");
+
         if (environment.IsDevelopment())
         {
-            Console.WriteLine("For when you run from the IDE - Development environment");
             var projectPath = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName).FullName;
             config.SetBasePath(projectPath);
         }
         else
         {
-            Console.WriteLine("For when you run from the CLI - Not development environment");
             config.SetBasePath(Directory.GetCurrentDirectory());
         }
 
@@ -43,13 +33,14 @@ var host = Host.CreateDefaultBuilder(args)
     .Build();
 
 var azureKeyVaultService = host.Services.GetRequiredService<AzureKeyVaultService>();
+var configuration = host.Services.GetRequiredService<IConfiguration>();
 
 Console.WriteLine("\nAzure Key Vault - secrets\n");
 Console.WriteLine($"POC Secret 1: {await azureKeyVaultService.GetSecretAsync("Key-One")}");
 Console.WriteLine($"POC Secret 2: {await azureKeyVaultService.GetSecretAsync("Key-Two")}");
 
-//  Currently fails because I have not set up the DefaultAzureCredential in my local environment.
-// Console.WriteLine($"POC Secret 2: {await azureKeyVaultService.GetSecretDefaultAzureCredentialsAsync("Key-Two")}");
+//  Key is obscured as this is a public repo. 
+Console.WriteLine($"POC Secret 3: {await azureKeyVaultService.GetSecretDefaultAzureCredentialsAsync(configuration["DefaultAzyreCredentialAzureKeyVault:Key"])}");
 
 Console.WriteLine("\nHello, Azure Key Vault POC!");
 Console.ReadKey();
