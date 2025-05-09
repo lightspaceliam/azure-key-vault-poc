@@ -48,5 +48,8 @@ Console.WriteLine("\nAzure Key Vault - secrets\n");
 Console.WriteLine($"POC Secret 1: {await azureKeyVaultService.GetSecretAsync("Key-One")}");
 Console.WriteLine($"POC Secret 2: {await azureKeyVaultService.GetSecretAsync("Key-Two")}");
 
+//  Currently fails because I have not set up the DefaultAzureCredential in my local environment.
+// Console.WriteLine($"POC Secret 2: {await azureKeyVaultService.GetSecretDefaultAzureCredentialsAsync("Key-Two")}");
+
 Console.WriteLine("\nHello, Azure Key Vault POC!");
 Console.ReadKey();

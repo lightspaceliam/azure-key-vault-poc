@@ -1,11 +1,6 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KeyVault_POC.Services
 {
@@ -26,6 +21,22 @@ namespace KeyVault_POC.Services
         {
             var credential = new ClientSecretCredential(_tenantId, _clientId, _clientSecret);
             var secretClient = new SecretClient(_keyVaultUri, credential);
+
+            var keyVaultSecret = (await secretClient.GetSecretAsync(key)).Value;
+
+            return keyVaultSecret?.Value;
+        }
+
+        /// <summary>
+        /// Same as above but requires the DefaultAzureCredential to be set up in your local environment. What if you don't have access to Azure Portal or the Key Vault?
+        /// Keeping in mind I need to investigate what each credential item is.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public async Task<string?> GetSecretDefaultAzureCredentialsAsync(string key)
+        {
+            //  
+            var secretClient = new SecretClient(_keyVaultUri, new DefaultAzureCredential());
 
             var keyVaultSecret = (await secretClient.GetSecretAsync(key)).Value;
 
